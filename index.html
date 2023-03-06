@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>IRC Chat</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(function() {
+			// Handle form submission
+			$('#chat-form').submit(function(event) {
+				event.preventDefault();
+				var message = $('#chat-message').val();
+				$.post('http://localhost/pirc/connect.php?hasmessage=true', {message: message}, function(data) {
+					$('#chat-messages').append(data);
+					$('#chat-message').val('');
+				});
+			});
+
+			pol();
+			
+			// Update chat messages every second
+			// setInterval(function() {
+			// 	$.get('http://localhost/pirc/connect.php?read=true', function(data) {
+			// 		$('#chat-messages').html(data);
+			// 	});
+			// }, 20000);
+		});
+
+		function pol(){
+			$.get('http://localhost/pirc/connect.php?read=true', function(data) {
+				$('#chat-messages').html(data);
+				pol();
+			});
+		}
+
+	</script>
+</head>
+<body>	
+	<form id="chat-form">
+		<input type="text" id="chat-message" name="message">
+		<button type="submit">Send</button>
+	</form>
+	<div id="chat-messages"></div>
+</body>
+</html>
